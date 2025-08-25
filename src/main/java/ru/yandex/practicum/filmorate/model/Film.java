@@ -26,5 +26,5 @@ public class Film {
 
     @NotNull(message = "Продолжительность фильма не может быть пустой")
     @Positive(message = "Продолжительность фильма должна быть положительной")
-    Integer durationInMinutes;
+    Integer duration;
 }

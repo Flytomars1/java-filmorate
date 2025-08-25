@@ -24,7 +24,7 @@ public class FilmControllerTest {
         validFilm.setName("Test name");
         validFilm.setDescription("Test description");
         validFilm.setReleaseDate(LocalDate.of(2005, 5, 5));
-        validFilm.setDurationInMinutes(5);
+        validFilm.setDuration(5);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class FilmControllerTest {
 
     @Test
     void notCreateFilmWithZeroDuration() {
-        validFilm.setDurationInMinutes(0);
+        validFilm.setDuration(0);
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -63,7 +63,7 @@ public class FilmControllerTest {
 
     @Test
     void notCreateFilmWithNegativeDuration() {
-        validFilm.setDurationInMinutes(-10);
+        validFilm.setDuration(-10);
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -79,13 +79,13 @@ public class FilmControllerTest {
 
         created.setName("Новое имя");
         created.setDescription("Новое описание");
-        created.setDurationInMinutes(10);
+        created.setDuration(10);
 
         Film updated = filmController.update(created);
 
         assertEquals("Новое имя", updated.getName());
         assertEquals("Новое описание", updated.getDescription());
-        assertEquals(10, updated.getDurationInMinutes());
+        assertEquals(10, updated.getDuration());
     }
 
     @Test
