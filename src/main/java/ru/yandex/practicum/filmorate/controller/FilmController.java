@@ -30,12 +30,7 @@ public class FilmController {
     public Film create(@RequestBody @Valid Film film) {
         log.info("Пытаемся создать фильм: {}", film.getName());
 
-        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            throw new ValidationException("Дата релиза должна быть не раньше 28 декабря 1895 года");
-        }
-        if (film.getDuration() <= 0) {
-            throw new ValidationException("Продолжительность фильма должна быть положительной");
-        }
+        validateReleaseDate(film);
 
         film.setId((getNextId()));
         films.put(film.getId(), film);
@@ -59,13 +54,7 @@ public class FilmController {
             throw new ConditionsNotMetException("Фильм с таким id не найден");
         }
 
-        if (newFilm.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            throw new ValidationException("Дата релиза должна быть не раньше 28 декабря 1895 года");
-        }
-
-        if (newFilm.getDuration() <= 0) {
-            throw new ValidationException("Продолжительность фильма должна быть положительной");
-        }
+        validateReleaseDate(newFilm);
 
         oldFilm.setName(newFilm.getName());
         oldFilm.setDescription(newFilm.getDescription());
@@ -74,6 +63,12 @@ public class FilmController {
 
         log.info("Фильм с id={} успешно обновлён", oldFilm.getId());
         return oldFilm;
+    }
+
+    private void validateReleaseDate(Film film) {
+        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
+            throw new ValidationException("Дата релиза должна быть не раньше 28 декабря 1895 года");
+        }
     }
 
     private long getNextId() {

@@ -70,57 +70,26 @@ public class UserController {
             throw new DuplicatedDataException("Этот email уже используется другим пользователем");
         }
 
-        if (newUser.getEmail() != null) {
-            oldUser.setEmail(newUser.getEmail());
-            log.info("Пользователь id={} - email обновлён на {}", oldUser.getId(), oldUser.getEmail());
+        oldUser.setEmail(newUser.getEmail());
+        log.info("Пользователь id={} - email обновлён на {}", oldUser.getId(), oldUser.getEmail());
+
+        oldUser.setLogin(newUser.getLogin());
+        log.info("Пользователь id={} - login обновлён на {}", oldUser.getId(), oldUser.getLogin());
+
+        if (newUser.getName() == null || newUser.getName().isBlank()) {
+            oldUser.setName(newUser.getLogin());
+            log.info("Имя не указано или пустое, устанавливаем login как имя: {}", oldUser.getName());
+        } else {
+            oldUser.setName(newUser.getName());
+            log.info("Пользователь id={} - имя обновлено на {}", oldUser.getId(), oldUser.getName());
         }
-        if (newUser.getLogin() != null) {
-            oldUser.setLogin(newUser.getLogin());
-            log.info("Пользователь id={} - login обновлён на {}", oldUser.getId(), oldUser.getLogin());
-        }
-        if (newUser.getName() != null) {
-            if (newUser.getName().isBlank()) {
-                oldUser.setName(newUser.getLogin());
-                log.info("Пользователь id={} - передано пустое имя, устанавливаем вместо имени логин {}", oldUser.getId(), oldUser.getLogin());
-            } else {
-                oldUser.setName(newUser.getName());
-                log.info("Пользователь id={} - имя обновлено на {}", oldUser.getId(), oldUser.getName());
-            }
-        }
-        if (newUser.getBirthday() != null) {
-            oldUser.setBirthday(newUser.getBirthday());
-            log.info("Пользователь id={} - дата рождения обновлена", oldUser.getId());
-        }
+
+        oldUser.setBirthday(newUser.getBirthday());
+        log.info("Пользователь id={} - дата рождения обновлена", oldUser.getId());
 
         log.info("Пользователь id={} успешно обновлён", oldUser.getId());
         return oldUser;
     }
-
-    /*
-    private void validateUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new ValidationException("Электронная почта не может быть пустой");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Электронная почта должна содержать символ @");
-        }
-
-        if (user.getLogin() == null || user.getLogin().isBlank()) {
-            throw new ValidationException("Логин не может быть пустым");
-        }
-        if (user.getLogin().contains(" ")) {
-            throw new ValidationException("Логин не может содержать пробелы");
-        }
-
-        if (user.getName() == null || user.getName().trim().isEmpty()) {
-            user.setName(user.getLogin());
-        }
-
-        if (user.getBirthday() != null && user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем.");
-        }
-    }
-     */
 
     private long getNextId() {
         long currentMaxId = users.keySet()

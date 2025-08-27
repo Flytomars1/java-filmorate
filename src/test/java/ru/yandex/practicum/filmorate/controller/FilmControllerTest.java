@@ -50,30 +50,6 @@ public class FilmControllerTest {
     }
 
     @Test
-    void notCreateFilmWithZeroDuration() {
-        validFilm.setDuration(0);
-
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> filmController.create(validFilm)
-        );
-
-        assertEquals("Продолжительность фильма должна быть положительной", exception.getMessage());
-    }
-
-    @Test
-    void notCreateFilmWithNegativeDuration() {
-        validFilm.setDuration(-10);
-
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> filmController.create(validFilm)
-        );
-
-        assertEquals("Продолжительность фильма должна быть положительной", exception.getMessage());
-    }
-
-    @Test
     void updateFilm() {
         Film created = filmController.create(validFilm);
 
