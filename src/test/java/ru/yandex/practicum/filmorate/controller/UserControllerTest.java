@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -17,12 +19,12 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userController = new UserController();
+        UserStorage storage = new InMemoryUserStorage();
+        userController = new UserController(storage);
 
         validUser = new User();
         validUser.setEmail("test@test.com");
         validUser.setLogin("testlogin");
-        validUser.setName("test name");
         validUser.setBirthday(LocalDate.of(1990, 1, 1));
     }
 
@@ -34,7 +36,7 @@ public class UserControllerTest {
         assertEquals(1L, created.getId());
         assertEquals("test@test.com", created.getEmail());
         assertEquals("testlogin", created.getLogin());
-        assertEquals("test name", created.getName());
+        assertEquals("testlogin", created.getName());
     }
 
     @Test
