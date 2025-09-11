@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.InMemoryUserService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -102,5 +103,17 @@ class FriendsControllerTest {
         );
 
         assertEquals("Пользователь с id=999 не найден", exception.getMessage());
+    }
+
+    @Test
+    void cannotAddSelfAsFriend() {
+        userStorage.create(user1);
+
+        ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> userService.addFriend(1L, 1L)
+        );
+
+        assertEquals("Нельзя добавить себя в друзья", exception.getMessage());
     }
 }
