@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dal.FriendshipRepository;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class InMemoryUserService implements UserService {
 
     private final UserStorage userStorage;
+    private final FriendshipRepository friendshipRepository;
 
     @Override
     public User create(User user) {
@@ -84,46 +86,42 @@ public class InMemoryUserService implements UserService {
             throw new ValidationException("Нельзя добавить себя в друзья");
         }
 
-        User user = getUserOrThrow(userId);
-        User friend = getUserOrThrow(friendId);
+        getUserOrThrow(userId);
+        getUserOrThrow(friendId);
 
-        user.getFriends().add(friendId);
+        friendshipRepository.addFriend(userId, friendId);
 
-        friend.getFriends().add(userId);
-
-        log.info("Пользователи id={} и id={} теперь друзья", userId, friendId);
+        log.info("Пользователь id={} добавил в друзья пользователя id={}", userId, friendId);
     }
 
     @Override
     public void removeFriend(Long userId, Long friendId) {
         log.info("Пользователь id={} удаляет из друзей пользователя id={}", userId, friendId);
 
-        User user = getUserOrThrow(userId);
-        User friend = getUserOrThrow(friendId);
+        getUserOrThrow(userId);
+        getUserOrThrow(friendId);
 
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
+        friendshipRepository.removeFriend(userId, friendId);
 
-        log.info("Дружба между id={} и id={} разорвана", userId, friendId);
+        log.info("Пользователь id={} удалил из друзей пользователя id={}", userId, friendId);
     }
 
     @Override
     public Set<User> findFriends(Long userId) {
-        User user = getUserOrThrow(userId);
-        return user.getFriends().stream()
+        getUserOrThrow(userId);
+
+        var friendIds = friendshipRepository.findFriendIds(userId);
+        return friendIds.stream()
                 .map(userStorage::findById)
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Set<User> findCommonFriends(Long userId, Long otherId) {
-        User user = getUserOrThrow(userId);
-        User other = getUserOrThrow(otherId);
+        getUserOrThrow(userId);
+        getUserOrThrow(otherId);
 
-        Set<Long> commonFriendIds = user.getFriends().stream()
-                .filter(other.getFriends()::contains)
-                .collect(Collectors.toSet());
-
+        var commonFriendIds = friendshipRepository.findCommonFriendIds(userId, otherId);
         return commonFriendIds.stream()
                 .map(userStorage::findById)
                 .collect(Collectors.toSet());

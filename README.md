@@ -3,10 +3,6 @@ Template repository for Filmorate project.
 ## Схема базы данных
 [Интерактивная схема БД Filmorate на dbdiagram.io](https://dbdiagram.io/d/Filmorate-68cbd2f15779bb72650fe4af)
 
-[Не интерактивная схема БД Filmorate](docs/Filmorate-db-schema.svg)
-
-[Исходный dbml код](src/main/resources/db/schema.dbml)
-
 ## Примеры запросов
 
 ### Получить всех пользователей
