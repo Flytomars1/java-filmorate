@@ -10,9 +10,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
-@Component
+@Component("userDbStorage")
 @Slf4j
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
@@ -39,10 +38,8 @@ public class UserDbStorage implements UserStorage {
             log.debug("Имя пользователя не указано, установлено значение логина: {}", user.getName());
         }
 
-        Optional<User> existingUser = userRepository.findById(user.getId());
-        if (existingUser.isEmpty()) {
-            throw new RuntimeException("Пользователь с id=" + user.getId() + " не найден для обновления");
-        }
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("Пользователь с id=" + user.getId() + " не найден для обновления"));
 
         User updatedUser = userRepository.update(user);
         log.info("Пользователь успешно обновлён в БД, id={}", updatedUser.getId());

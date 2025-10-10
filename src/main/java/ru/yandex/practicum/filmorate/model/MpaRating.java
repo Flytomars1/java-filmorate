@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MpaRating {
-    private Long id;
-    private String name;
+    Long id;
+    String name;
 }

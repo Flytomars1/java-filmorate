@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Component("filmDbStorage")
 @Slf4j
 @RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {

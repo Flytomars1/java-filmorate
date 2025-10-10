@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service.film;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dal.GenreRepository;
 import ru.yandex.practicum.filmorate.dal.LikeRepository;
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class InMemoryFilmService implements FilmService {
 
     private final FilmStorage filmStorage;
@@ -32,12 +31,24 @@ public class InMemoryFilmService implements FilmService {
     private final GenreRepository genreRepository;
     private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
+    public InMemoryFilmService(
+            @Qualifier("filmDbStorage") FilmStorage filmStorage,
+            @Qualifier("userDbStorage") UserStorage userStorage,
+            LikeRepository likeRepository,
+            MpaRatingRepository mpaRatingRepository,
+            GenreRepository genreRepository
+    ) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
+        this.likeRepository = likeRepository;
+        this.mpaRatingRepository = mpaRatingRepository;
+        this.genreRepository = genreRepository;
+    }
+
     @Override
     public Film create(Film film) {
         log.info("Создание фильма через сервис: {}", film.getName());
-        validateReleaseDate(film);
-        validateMpa(film);
-        validateGenres(film);
+        validateFilm(film);
         return filmStorage.create(film);
     }
 
@@ -55,9 +66,7 @@ public class InMemoryFilmService implements FilmService {
             throw new ConditionsNotMetException("Фильм с таким id не найден");
         }
 
-        validateReleaseDate(film);
-        validateMpa(film);
-        validateGenres(film);
+        validateFilm(film);
 
         existingFilm.setName(film.getName());
         existingFilm.setDescription(film.getDescription());
@@ -113,6 +122,12 @@ public class InMemoryFilmService implements FilmService {
                 .sorted(Comparator.comparing(film -> film.getLikes().size(), Comparator.reverseOrder()))
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+    private void validateFilm(Film film) {
+        validateReleaseDate(film);
+        validateMpa(film);
+        validateGenres(film);
     }
 
     private void validateReleaseDate(Film film) {

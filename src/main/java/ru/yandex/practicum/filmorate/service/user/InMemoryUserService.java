@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service.user;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dal.FriendshipRepository;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
@@ -16,11 +16,18 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class InMemoryUserService implements UserService {
 
     private final UserStorage userStorage;
     private final FriendshipRepository friendshipRepository;
+
+    public InMemoryUserService(
+            @Qualifier("userDbStorage") UserStorage userStorage,
+            FriendshipRepository friendshipRepository
+    ) {
+        this.userStorage = userStorage;
+        this.friendshipRepository = friendshipRepository;
+    }
 
     @Override
     public User create(User user) {

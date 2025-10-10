@@ -29,10 +29,9 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть положительной")
     Integer duration;
 
-    //@NotNull(message = "Рейтинг MPA должен быть указан")
-    private MpaRating mpa;
+    MpaRating mpa;
 
-    private List<Genre> genres = new ArrayList<>();
+    List<Genre> genres = new ArrayList<>();
 
     Set<Long> likes = new HashSet<>();
 }
