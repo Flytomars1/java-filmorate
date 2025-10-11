@@ -11,15 +11,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ErrorHandler {
 
-    //украл метод, потому что запутался как обработать MethodArgumentNotValidException
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.warn("Ошибка валидации параметров запроса: {}", e.getMessage());
 
-        // Берём первое сообщение об ошибке из валидации
         String errorMessage = e.getBindingResult().getFieldErrors().stream()
-                .map(fieldError -> fieldError.getDefaultMessage()) // сообщение из аннотации
+                .map(fieldError -> fieldError.getDefaultMessage())
                 .findFirst()
                 .orElse("Ошибка валидации запроса");
 
@@ -52,5 +50,11 @@ public class ErrorHandler {
     public ErrorResponse handleThrowable(final Throwable e) {
         log.error("Непредвиденная ошибка", e);
         return new ErrorResponse("Произошла непредвиденная ошибка.");
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFound(NotFoundException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }

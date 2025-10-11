@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@Component("inMemoryFilmStorage")
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
 

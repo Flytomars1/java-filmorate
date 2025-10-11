@@ -7,12 +7,11 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-/**
- * Film.
- */
 @Data
 public class Film {
     Long id;
@@ -29,6 +28,10 @@ public class Film {
     @NotNull(message = "Продолжительность фильма не может быть пустой")
     @Positive(message = "Продолжительность фильма должна быть положительной")
     Integer duration;
+
+    MpaRating mpa;
+
+    List<Genre> genres = new ArrayList<>();
 
     Set<Long> likes = new HashSet<>();
 }
